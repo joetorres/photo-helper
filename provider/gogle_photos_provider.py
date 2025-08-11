@@ -47,7 +47,7 @@ class GooglePhotosProvider(BaseProvider):
         service = build('photoslibrary', 'v1', credentials=creds, static_discovery=False)
         
 
-    def list_all_files(self, base_dir: str) -> list[FileInfo]:
+    def list_all_files(self) -> list[FileInfo]:
         results = []
         
         if self.__SERVICE:
@@ -59,14 +59,19 @@ class GooglePhotosProvider(BaseProvider):
             else:
                 print('Fotos encontradas:')
                 for item in items: # type: ignore
-                    f = FileInfo(item['id'], item['filename'])
+                    f = FileInfo(item['id'], item['filename'],item['filename'], item['filename'].split('.')[-1])
+                    print("==========================")
+                    print(f"== Found photo:")
+                    print(f)
+                    print("==========================")
+                    
                     results.append(f)
         
         return results
 	
-    def download_file(self, file: FileInfo, destination_path: str):
+    def download_file(self, file: FileInfo, destination_dir: str):
         if self.__SERVICE is None:
-            return False
+            return None
         
         media_item = self.__SERVICE.mediaItems().get(mediaItemId=file.fileId).execute()
         download_url = media_item['baseUrl'] + '=d'
@@ -75,7 +80,7 @@ class GooglePhotosProvider(BaseProvider):
         print(f"Downloading photo '{filename}'...")
         response = requests.get(download_url, stream=True)
         if response.status_code == 200:
-            file_path = os.path.join(destination_path, filename)                        
+            file_path = os.path.join(destination_dir, file.filename)                        
             with open(file_path, 'wb') as f:
                 for chunk in response.iter_content(1024):
                     f.write(chunk)
@@ -83,7 +88,7 @@ class GooglePhotosProvider(BaseProvider):
                 f.flush()
                 f.close()
 
-            return True
+            return file_path
         else:
-            print(f"Error download photo: {response.status_code}")
-            return False
+            print(f"Error downloading photo: {response.status_code}")
+            return None
