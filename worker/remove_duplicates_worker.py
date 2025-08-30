@@ -6,6 +6,13 @@ from data import get_con, DATA_DIRECTORY
 from provider.base_provider import BaseProvider
 from helper.file_helper import get_file_md5
 
+INPUT_DIR = os.path.join(DATA_DIRECTORY, 'input')
+
+def setup_worker():
+    print('creating ' + INPUT_DIR)
+    if os.path.exists(INPUT_DIR):
+        os.makedirs(INPUT_DIR)
+
 def execute_worker(providers: list[BaseProvider], destination_directory: str):
     print("Executing duplication worker")
 
@@ -14,7 +21,7 @@ def execute_worker(providers: list[BaseProvider], destination_directory: str):
         all_files = provider.list_all_files()
 
         for f in all_files:            
-            result = provider.download_file(f, destination_directory)
+            result = provider.download_file(f, DATA_DIRECTORY)
             if result:
                 print(f"Downloaded file {f.fileName} in {result}")
                 md5 = get_file_md5(result)

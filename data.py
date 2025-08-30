@@ -3,7 +3,7 @@
 import sqlite3
 import os
 
-DATA_DIRECTORY = '_data_';
+DATA_DIRECTORY = '.\\_data_';
 
 def get_con():
     path_db = os.path.join('.', DATA_DIRECTORY, 'photos.db')    
