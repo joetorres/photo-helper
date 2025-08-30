@@ -9,23 +9,17 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-
-from base_provider import BaseProvider, FileInfo
+from provider.base_provider import BaseProvider, FileInfo
 
 
 class GooglePhotosProvider(BaseProvider):
-    __CLIENT_ID : str
-    __CLIENT_SECRET: str
     __SCOPES = ['https://www.googleapis.com/auth/photoslibrary.readonly']
     __GOOGLE_CREDENTIALS = None
     __TOKEN_FILE = os.path.join("_data_", "token.json")
     __SERVICE = None
 
-    def __init__(self, client_id: str, client_secret: str) -> None:
-        super().__init__()
-        self.__CLIENT_ID = client_id
-        self.__CLIENT_SECRET = client_secret
-
+    def __init__(self) -> None:
+        super().__init__()        
         self.__setup()
         
     def __setup(self):
@@ -65,8 +59,7 @@ class GooglePhotosProvider(BaseProvider):
                     print(f)
                     print("==========================")
                     
-                    results.append(f)
-        
+                    results.append(f)        
         return results
 	
     def download_file(self, file: FileInfo, destination_dir: str):

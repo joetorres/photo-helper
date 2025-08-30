@@ -2,10 +2,9 @@
 import os
 import shutil
 
-from base_provider import BaseProvider, FileInfo
+from provider.base_provider import BaseProvider, FileInfo
 
-
-class FileSystemProvide(BaseProvider):
+class FileSystemProvider(BaseProvider):
     __BASE_DIRECTORY = ""
 
     def __init__(self, base_directory: str):
